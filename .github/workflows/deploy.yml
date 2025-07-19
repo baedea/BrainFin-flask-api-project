@@ -56,9 +56,7 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/investment-api:latest
     
-    # 部署到雲端服務（可選）
-    - name: Deploy to Cloud Run (Optional)
-      if: ${{ secrets.GCP_PROJECT_ID != '' }}
+    - name: Deployment completed
       run: |
-        echo "Deploy to Google Cloud Run or other cloud services"
-        # 添加您的部署命令
+        echo "✅ Docker image built and pushed successfully!"
+        echo "🚀 Image available at: ${{ secrets.DOCKER_USERNAME }}/investment-api:latest"
