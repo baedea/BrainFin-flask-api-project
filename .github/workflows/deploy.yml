@@ -58,7 +58,7 @@ jobs:
     
     # 部署到雲端服務（可選）
     - name: Deploy to Cloud Run (Optional)
-      if: ${{ secrets.GCP_PROJECT_ID }}
+      if: ${{ secrets.GCP_PROJECT_ID != '' }}
       run: |
         echo "Deploy to Google Cloud Run or other cloud services"
         # 添加您的部署命令
