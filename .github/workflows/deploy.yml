@@ -58,5 +58,4 @@ jobs:
     
     - name: Deployment completed
       run: |
-        echo "✅ Docker image built and pushed successfully!"
-        echo "🚀 Image available at: ${{ secrets.DOCKER_USERNAME }}/investment-api:latest"
+        echo "Docker image built and pushed successfully!"
