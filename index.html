@@ -370,8 +370,8 @@
                                 <input type="number" id="appreciation_rate" name="appreciation_rate" value="3" step="0.1" required>
                             </div>
                             <div class="form-group">
-                                <label for="years">持有年數</label>
-                                <input type="number" id="years" name="years" value="10" required>
+                                <label for="simulation_years">持有年數</label>
+                                <input type="number" id="simulation_years" name="simulation_years" value="10" required>
                             </div>
                         </div>
                     </div>
@@ -424,9 +424,13 @@
                                 <input type="number" id="expected_return" name="expected_return" value="10" step="0.1" required>
                             </div>
                             <div class="form-group">
-                                <label for="stock_years">投資年限</label>
-                                <input type="number" id="stock_years" name="years" value="10" required>
+                                <label for="volatility">波動率 (%)</label>
+                                <input type="number" id="volatility" name="volatility" value="20" step="0.1" required>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="stock_years">投資年限</label>
+                            <input type="number" id="stock_years" name="years" value="10" required>
                         </div>
                     </div>
                     
@@ -438,13 +442,13 @@
                     <div class="form-section">
                         <h4>投資設定</h4>
                         <div class="form-group">
-                            <label for="fund_monthly_amount">每月投入 (TWD)</label>
-                            <input type="number" id="fund_monthly_amount" name="monthly_amount" value="15000" required>
+                            <label for="fund_initial_amount">初始投入 (TWD)</label>
+                            <input type="number" id="fund_initial_amount" name="initial_amount" value="100000" required>
                         </div>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label for="fund_expected_return">預期年報酬率 (%)</label>
-                                <input type="number" id="fund_expected_return" name="expected_return" value="6" step="0.1" required>
+                                <label for="fund_annual_return">預期年報酬率 (%)</label>
+                                <input type="number" id="fund_annual_return" name="annual_return" value="6" step="0.1" required>
                             </div>
                             <div class="form-group">
                                 <label for="fund_years">投資年限</label>
@@ -461,13 +465,13 @@
                     <div class="form-section">
                         <h4>投資設定</h4>
                         <div class="form-group">
-                            <label for="bond_amount">投資金額 (TWD)</label>
-                            <input type="number" id="bond_amount" name="amount" value="1000000" required>
+                            <label for="bond_principal">本金投資 (TWD)</label>
+                            <input type="number" id="bond_principal" name="principal" value="1000000" required>
                         </div>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label for="bond_annual_return">年利率 (%)</label>
-                                <input type="number" id="bond_annual_return" name="annual_return" value="4" step="0.1" required>
+                                <label for="bond_interest_rate">年利率 (%)</label>
+                                <input type="number" id="bond_interest_rate" name="interest_rate" value="4" step="0.1" required>
                             </div>
                             <div class="form-group">
                                 <label for="bond_years">投資年限</label>
@@ -511,6 +515,15 @@
     <script>
         let currentChart = null;
 
+        // 前端到後端的類型映射
+        const API_TYPE_MAPPING = {
+            'real_estate': 'real_estate',
+            'etf': 'etf_regular',
+            'stock': 'stock',
+            'fund': 'mutual_fund',
+            'bond': 'bond_deposit'
+        };
+
         // 投資類型切換
         document.querySelectorAll('.investment-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -553,10 +566,17 @@
             });
         });
 
-        async function submitInvestmentForm(type, data) {
+        async function submitInvestmentForm(frontendType, data) {
             const apiUrl = document.getElementById('api_url').value.trim();
             if (!apiUrl) {
                 showError('請輸入 API URL');
+                return;
+            }
+
+            // 使用映射表獲取後端對應的類型
+            const backendType = API_TYPE_MAPPING[frontendType];
+            if (!backendType) {
+                showError('未知的投資類型');
                 return;
             }
 
@@ -566,7 +586,7 @@
             hideSuccess();
 
             try {
-                const response = await fetch(`${apiUrl}/simulate/${type}`, {
+                const response = await fetch(`${apiUrl}/simulate/${backendType}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -626,7 +646,7 @@
                 { label: '總還款金額', value: formatCurrency(data.total_payments) },
                 { label: '總利息支出', value: formatCurrency(data.total_interest) },
                 { label: '總持有成本', value: formatCurrency(data.total_cost) },
-                { label: `${data.years}年後房價`, value: formatCurrency(data.final_value) },
+                { label: `${data.simulation_years || data.years}年後房價`, value: formatCurrency(data.final_value) },
                 { label: '投資報酬率', value: `${data.roi.toFixed(2)}%` },
                 { label: '年化報酬率', value: `${data.annualized_return.toFixed(2)}%` }
             ];
@@ -648,8 +668,8 @@
             if (data.monthly_amount) {
                 items.push({ label: '每月投入', value: formatCurrency(data.monthly_amount) });
             }
-            if (data.amount && !data.initial_amount) {
-                items.push({ label: '投資金額', value: formatCurrency(data.amount) });
+            if (data.principal) {
+                items.push({ label: '投資本金', value: formatCurrency(data.principal) });
             }
             
             items.push(
@@ -784,55 +804,63 @@
             const labels = {
                 'real_estate': '🏠 房地產投資',
                 'etf': '📈 ETF 定期定額',
+                'etf_regular': '📈 ETF 定期定額',
                 'stock': '📊 股票投資',
                 'fund': '💰 基金投資',
-                'bond': '💎 美債/定存'
+                'mutual_fund': '💰 基金投資',
+                'bond': '💎 美債/定存',
+                'bond_deposit': '💎 美債/定存'
             };
             return labels[type] || type;
         }
 
         function formatCurrency(amount) {
-            if (typeof amount !== 'number') return amount;
-            return `NT$ ${amount.toLocaleString()}`;
-        }
+    if (typeof amount !== 'number') return amount;
+    return amount.toLocaleString('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 });
+}
 
-        function showLoading() {
-            document.getElementById('loading').classList.remove('hidden');
-        }
+function formatCurrency(amount) {
+    if (typeof amount !== 'number') return amount;
+    return amount.toLocaleString('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 });
+}
 
-        function hideLoading() {
-            document.getElementById('loading').classList.add('hidden');
-        }
+function showLoading() {
+    document.getElementById('loading').classList.remove('hidden');
+}
 
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.classList.remove('hidden');
-        }
+function hideLoading() {
+    document.getElementById('loading').classList.add('hidden');
+}
 
-        function hideError() {
-            document.getElementById('error').classList.add('hidden');
-        }
+function showError(message) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.textContent = message;
+    errorDiv.classList.remove('hidden');
+}
 
-        function showSuccess(message) {
-            const successDiv = document.getElementById('success');
-            successDiv.textContent = message;
-            successDiv.classList.remove('hidden');
-            setTimeout(() => hideSuccess(), 3000);
-        }
+function hideError() {
+    document.getElementById('error').classList.add('hidden');
+}
 
-          function hideSuccess() {
-            document.getElementById('success').classList.add('hidden');
-        }
+function showSuccess(message) {
+    const successDiv = document.getElementById('success');
+    successDiv.textContent = message;
+    successDiv.classList.remove('hidden');
+    setTimeout(() => hideSuccess(), 3000);  // 3秒後自動隱藏
+}
 
-        function hideResults() {
-            document.getElementById('results').classList.add('hidden');
-        }
+function hideSuccess() {
+    document.getElementById('success').classList.add('hidden');
+}
 
-        // 頁面加載時初始化載入歷史紀錄
-        window.addEventListener('DOMContentLoaded', () => {
-            loadHistory();
-        });
-    </script>
+function hideResults() {
+    document.getElementById('results').classList.add('hidden');
+}
+
+// 頁面加載時初始化載入歷史紀錄
+window.addEventListener('DOMContentLoaded', () => {
+    loadHistory();
+});
+</script>
 </body>
 </html>
