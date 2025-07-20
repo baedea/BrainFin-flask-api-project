@@ -819,11 +819,6 @@
     return amount.toLocaleString('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 });
 }
 
-function formatCurrency(amount) {
-    if (typeof amount !== 'number') return amount;
-    return amount.toLocaleString('zh-TW', { style: 'currency', currency: 'TWD', minimumFractionDigits: 0 });
-}
-
 function showLoading() {
     document.getElementById('loading').classList.remove('hidden');
 }

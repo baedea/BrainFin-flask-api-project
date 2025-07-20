@@ -17,7 +17,11 @@ app = FastAPI(title="Investment Simulation API", version="1.0.0")
 
 app.add_middleware(
    CORSMiddleware,
-   allow_origins=["https://baedea.github.io"],
+   allow_origins=[
+       "https://baedea.github.io",
+       "https://brainfin-flask-api-project-production.up.railway.app",
+       "*"
+   ],
    allow_credentials=True,
    allow_methods=["*"],
    allow_headers=["*"],
@@ -57,9 +61,11 @@ def get_db_connection():
         yield conn
     finally:
         conn.close()
-
-# 初始化資料庫
-init_database()
+try:
+    init_database()
+    print("Database initialized successfully")
+except Exception as e:
+    print(f"Database initialization error: {e}")
 
 # =================================
 # Pydantic Models for Request/Response
@@ -591,6 +597,17 @@ async def delete_simulation(simulation_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Delete error: {str(e)}")
 
+@app.get("/history")
+async def get_history():
+    """取得歷史記錄（相容性端點）"""
+    try:
+        simulations = get_all_simulations_from_db()
+        return {
+            "success": True,
+            "data": simulations
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 # =================================
 # Individual endpoints for each investment type (from original code)
 # =================================
