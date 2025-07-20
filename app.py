@@ -10,9 +10,18 @@ from datetime import datetime
 from enum import Enum
 from contextlib import contextmanager
 import uuid
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Investment Simulation API", version="1.0.0")
 
+app.add_middleware(
+   CORSMiddleware,
+   allow_origins=["https://baedea.github.io"],
+   allow_credentials=True,
+   allow_methods=["*"],
+   allow_headers=["*"],
+)
 # =================================
 # Database Setup
 # =================================

@@ -62,4 +62,5 @@ logs/
 htmlcov/
 
 # Docker
-.dockerignore
+.dockerignore.venv
+venv
