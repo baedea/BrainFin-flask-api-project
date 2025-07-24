@@ -651,6 +651,17 @@
 
         function displayRealEstateResults(data, container) {
             // 加入安全檢查函數
+            // 將 getFieldValue 移到全局作用域
+            const getFieldValue = (data, possibleFields) => {
+                for (const field of possibleFields) {
+                    if (data[field] !== undefined && data[field] !== null) {
+                        return data[field];
+                    }
+                }
+                return 0;
+            };
+
+            // 其他輔助函數也移到全局作用域
             const safeToFixed = (value, decimals = 2) => {
                 if (value === null || value === undefined || isNaN(value)) {
                     console.warn('數值無效:', value);
@@ -666,34 +677,80 @@
                 return formatCurrency(value);
             };
 
-            const getFieldValue = (data, possibleFields) => {
-                for (const field of possibleFields) {
-                    if (data[field] !== undefined && data[field] !== null) {
-                        return data[field];
-                    }
-                }
-                return 0;
-            };
+            function displayResults(data) {
+                // 你的 displayResults 邏輯
+                displayGeneralResults(data, container);
+            }
 
-            // 修改 items 陣列，使用安全函數
-            const items = [
-                { label: '投資類型', value: getTypeLabel(data.type) },
-                { label: '房屋總價', value: safeCurrency(data.house_price) },
-                { label: '頭期款', value: safeCurrency(data.down_payment) },
-                { label: '貸款金額', value: safeCurrency(data.loan_amount) },
-                { label: '每月還款', value: safeCurrency(data.monthly_payment) },
-                { label: '總還款金額', value: safeCurrency(data.total_payments) },
-                { label: '總利息支出', value: safeCurrency(data.total_interest) },
-                { label: '總持有成本', value: safeCurrency(data.total_cost) },
-                { label: `${data.simulation_years || data.years}年後房價`, value: safeCurrency(data.final_value) },
-                { label: '投資報酬率', value: `${safeToFixed(data.roi)}%` },
-                { label: '年化報酬率', value: `${safeToFixed(data.annualized_return)}%` }
-            ];
-            
-            items.forEach(item => {
-                const div = createResultItem(item.label, item.value);
-                container.appendChild(div);
-            });
+            function displayRealEstateResults(data, container) {
+                // 現在可以直接使用全局的 getFieldValue
+                const items = [
+                    { label: '投資類型', value: getTypeLabel(data.type) },
+                    { label: '房屋總價', value: safeCurrency(data.house_price) },
+                    { label: '頭期款', value: safeCurrency(data.down_payment) },
+                    { label: '貸款金額', value: safeCurrency(data.loan_amount) },
+                    { label: '每月還款', value: safeCurrency(data.monthly_payment) },
+                    { label: '總還款金額', value: safeCurrency(data.total_payments) },
+                    { label: '總利息支出', value: safeCurrency(data.total_interest) },
+                    { label: '總持有成本', value: safeCurrency(data.total_cost) },
+                    { label: `${data.simulation_years || data.years}年後房價`, value: safeCurrency(data.final_value) },
+                    { label: '投資報酬率', value: `${safeToFixed(data.roi)}%` },
+                    { label: '年化報酬率', value: `${safeToFixed(data.annualized_return)}%` }
+                ];
+
+                items.forEach(item => {
+                    const div = createResultItem(item.label, item.value);
+                    container.appendChild(div);
+                });
+            }
+
+            function displayGeneralResults(data, container) {
+                // 現在可以使用全局的輔助函數
+                const items = [
+                    { label: '投資類型', value: getTypeLabel(data.type) }
+                ];
+
+                // 初始投資金額
+                const initialAmount = getFieldValue(data, ['initial_amount', 'principal']);
+                if (initialAmount > 0) {
+                    items.push({ label: '初始投資', value: safeCurrency(initialAmount) });
+                }
+
+                // 每月投入
+                const monthlyAmount = getFieldValue(data, ['monthly_amount']);
+                if (monthlyAmount > 0) {
+                    items.push({ label: '每月投入', value: safeCurrency(monthlyAmount) });
+                }
+
+                // 總投入金額
+                const totalInvested = getFieldValue(data, ['total_investment', 'total_invested', 'principal']);
+                items.push({ label: '總投入金額', value: safeCurrency(totalInvested) });
+
+                // 最終價值
+                const finalValue = getFieldValue(data, ['final_value', 'current_value']);
+                const years = getFieldValue(data, ['years', 'simulation_years']) || 10;
+                items.push({ label: `${years}年後總值`, value: safeCurrency(finalValue) });
+
+                // 總獲利
+                const totalProfit = getFieldValue(data, ['profit', 'total_profit']);
+                items.push({ label: '總獲利', value: safeCurrency(totalProfit) });
+
+                // ROI
+                const roi = getFieldValue(data, ['roi', 'investment_ratio']);
+                items.push({ label: '投資報酬率', value: `${safeToFixed(roi)}%` });
+
+                // 年化報酬率（如果有的話）
+                const annualizedReturn = getFieldValue(data, ['annualized_return', 'irr', 'mean_return']);
+                if (annualizedReturn !== 0) {
+                    items.push({ label: '年化報酬率', value: `${safeToFixed(annualizedReturn)}%` });
+                }
+
+                // 渲染結果
+                items.forEach(item => {
+                    const div = createResultItem(item.label, item.value);
+                    container.appendChild(div);
+                });
+            }
         }
 
         function displayGeneralResults(data, container) {
