@@ -599,10 +599,17 @@
                     throw new Error(errorData.error || `API 請求失敗: ${response.status}`);
                 }
 
-                const result = await response.json();
-                displayResults(result);
-                showSuccess('模擬計算完成！');
-                
+                const apiResponse = await response.json();
+                console.log('完整API回應:', apiResponse);
+
+                if (apiResponse.success && apiResponse.result) {
+                    console.log('結果資料:', apiResponse.result);
+                    console.log('結果資料的所有鍵:', Object.keys(apiResponse.result || {}));
+                    displayResults(apiResponse.result);
+                    showSuccess('模擬計算完成！');
+                } else {
+                    throw new Error('API 回應格式錯誤');
+                }
                 // 載入最新的歷史記錄
                 loadHistory();
                 
@@ -615,6 +622,12 @@
         }
 
         function displayResults(data) {
+            // 資料驗證
+            if (!data || typeof data !== 'object') {
+                console.error('無效的結果資料:', data);
+                showError('結果資料格式錯誤');
+                return;
+            }
             const resultsDiv = document.getElementById('results');
             const resultItems = document.getElementById('result_items');
             
@@ -637,18 +650,44 @@
         }
 
         function displayRealEstateResults(data, container) {
+            // 加入安全檢查函數
+            const safeToFixed = (value, decimals = 2) => {
+                if (value === null || value === undefined || isNaN(value)) {
+                    console.warn('數值無效:', value);
+                    return '0.00';
+                }
+                return Number(value).toFixed(decimals);
+            };
+
+            const safeCurrency = (value) => {
+                if (value === null || value === undefined || isNaN(value)) {
+                    return 'NT$ 0';
+                }
+                return formatCurrency(value);
+            };
+
+            const getFieldValue = (data, possibleFields) => {
+                for (const field of possibleFields) {
+                    if (data[field] !== undefined && data[field] !== null) {
+                        return data[field];
+                    }
+                }
+                return 0;
+            };
+
+            // 修改 items 陣列，使用安全函數
             const items = [
                 { label: '投資類型', value: getTypeLabel(data.type) },
-                { label: '房屋總價', value: formatCurrency(data.house_price) },
-                { label: '頭期款', value: formatCurrency(data.down_payment) },
-                { label: '貸款金額', value: formatCurrency(data.loan_amount) },
-                { label: '每月還款', value: formatCurrency(data.monthly_payment) },
-                { label: '總還款金額', value: formatCurrency(data.total_payments) },
-                { label: '總利息支出', value: formatCurrency(data.total_interest) },
-                { label: '總持有成本', value: formatCurrency(data.total_cost) },
-                { label: `${data.simulation_years || data.years}年後房價`, value: formatCurrency(data.final_value) },
-                { label: '投資報酬率', value: `${data.roi.toFixed(2)}%` },
-                { label: '年化報酬率', value: `${data.annualized_return.toFixed(2)}%` }
+                { label: '房屋總價', value: safeCurrency(data.house_price) },
+                { label: '頭期款', value: safeCurrency(data.down_payment) },
+                { label: '貸款金額', value: safeCurrency(data.loan_amount) },
+                { label: '每月還款', value: safeCurrency(data.monthly_payment) },
+                { label: '總還款金額', value: safeCurrency(data.total_payments) },
+                { label: '總利息支出', value: safeCurrency(data.total_interest) },
+                { label: '總持有成本', value: safeCurrency(data.total_cost) },
+                { label: `${data.simulation_years || data.years}年後房價`, value: safeCurrency(data.final_value) },
+                { label: '投資報酬率', value: `${safeToFixed(data.roi)}%` },
+                { label: '年化報酬率', value: `${safeToFixed(data.annualized_return)}%` }
             ];
             
             items.forEach(item => {
@@ -658,26 +697,61 @@
         }
 
         function displayGeneralResults(data, container) {
+            // 安全檢查函數
+            const safeToFixed = (value, decimals = 2) => {
+                if (value === null || value === undefined || isNaN(value)) {
+                    console.warn('數值無效:', value);
+                    return '0.00';
+                }
+                return Number(value).toFixed(decimals);
+            };
+
+            const safeCurrency = (value) => {
+                if (value === null || value === undefined || isNaN(value)) {
+                    return 'NT$ 0';
+                }
+                return formatCurrency(value);
+            };
+
+            //safeCurrency
             const items = [
                 { label: '投資類型', value: getTypeLabel(data.type) }
             ];
             
-            if (data.initial_amount) {
-                items.push({ label: '初始投資', value: formatCurrency(data.initial_amount) });
+            // 初始投資金額
+            const initialAmount = getFieldValue(data, ['initial_amount', 'principal']);
+            if (initialAmount > 0) {
+                items.push({ label: '初始投資', value: safeCurrency(initialAmount) });
             }
-            if (data.monthly_amount) {
-                items.push({ label: '每月投入', value: formatCurrency(data.monthly_amount) });
+
+            // 每月投入
+            const monthlyAmount = getFieldValue(data, ['monthly_amount']);
+            if (monthlyAmount > 0) {
+                items.push({ label: '每月投入', value: safeCurrency(monthlyAmount) });
             }
-            if (data.principal) {
-                items.push({ label: '投資本金', value: formatCurrency(data.principal) });
+
+            // 總投入金額
+            const totalInvested = getFieldValue(data, ['total_investment', 'total_invested', 'principal']);
+            items.push({ label: '總投入金額', value: safeCurrency(totalInvested) });
+
+            // 最終價值
+            const finalValue = getFieldValue(data, ['final_value', 'current_value']);
+            const years = getFieldValue(data, ['years', 'simulation_years']) || 10;
+            items.push({ label: `${years}年後總值`, value: safeCurrency(finalValue) });
+
+            // 總獲利
+            const totalProfit = getFieldValue(data, ['profit', 'total_profit']);
+            items.push({ label: '總獲利', value: safeCurrency(totalProfit) });
+
+            // ROI
+            const roi = getFieldValue(data, ['roi', 'investment_ratio']);
+            items.push({ label: '投資報酬率', value: `${safeToFixed(roi)}%` });
+
+            // 年化報酬率（如果有的話）
+            const annualizedReturn = getFieldValue(data, ['annualized_return', 'irr', 'mean_return']);
+            if (annualizedReturn !== 0) {
+                items.push({ label: '年化報酬率', value: `${safeToFixed(annualizedReturn)}%` });
             }
-            
-            items.push(
-                { label: '總投入金額', value: formatCurrency(data.total_invested) },
-                { label: `${data.years}年後總值`, value: formatCurrency(data.final_value) },
-                { label: '總獲利', value: formatCurrency(data.total_profit) },
-                { label: '投資報酬率', value: `${data.roi.toFixed(2)}%` }
-            );
             
             items.forEach(item => {
                 const div = createResultItem(item.label, item.value);
@@ -783,21 +857,45 @@
         function displayHistory(history) {
             const historyList = document.getElementById('history_list');
             
-            if (!history.length) {
+            // 檢查 history 是否為陣列或有 data 屬性
+            let historyData = history;
+            if (history.success && history.data) {
+                historyData = history.data;
+            }
+            
+            if (!Array.isArray(historyData) || historyData.length === 0) {
                 historyList.innerHTML = '<p style="text-align: center; color: #666;">尚無模擬記錄</p>';
                 return;
             }
 
-            historyList.innerHTML = history.slice(0, 5).map(record => `
-                <div class="history-item">
-                    <div class="history-item-header">
-                        ${getTypeLabel(record.investment_type)} - ${new Date(record.created_at).toLocaleString('zh-TW')}
+            historyList.innerHTML = historyData.slice(0, 5).map(record => {
+                // 安全獲取欄位值
+                const getFieldValue = (obj, fields, defaultValue = 0) => {
+                    for (const field of fields) {
+                        if (obj.result && obj.result[field] !== undefined) {
+                            return obj.result[field];
+                        }
+                        if (obj[field] !== undefined) {
+                            return obj[field];
+                        }
+                    }
+                    return defaultValue;
+                };
+
+                const totalProfit = getFieldValue(record, ['profit', 'total_profit']);
+                const roi = getFieldValue(record, ['roi', 'investment_ratio']);
+                
+                return `
+                    <div class="history-item">
+                        <div class="history-item-header">
+                            ${getTypeLabel(record.investment_type)} - ${new Date(record.created_at).toLocaleString('zh-TW')}
+                        </div>
+                        <div class="history-item-details">
+                            總獲利: ${formatCurrency(totalProfit)} | ROI: ${roi.toFixed(2)}%
+                        </div>
                     </div>
-                    <div class="history-item-details">
-                        總獲利: ${formatCurrency(record.total_profit)} | ROI: ${record.roi.toFixed(2)}%
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function getTypeLabel(type) {
