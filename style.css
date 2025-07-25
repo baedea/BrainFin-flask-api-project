@@ -1,289 +1,384 @@
+/* 基本樣式重置 */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* 全局樣式 */
 body {
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #8B7355 0%, #A0956C 100%);
-  min-height: 100vh;
-  padding: 20px;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #8B7355 0%, #A0956C 100%);
+    min-height: 100vh;
+    padding: 20px;
 }
 
+/* 主容器 */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
+/* 頁面標題區域 */
 .header {
-  background: linear-gradient(135deg, #B8860B 0%, #CD853F 100%);
-  color: white;
-  padding: 30px;
-  text-align: center;
+    background: linear-gradient(135deg, #B8860B 0%, #CD853F 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
 }
 
 .header h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .header p {
-  font-size: 1.2em;
-  opacity: 0.9;
+    font-size: 1.2em;
+    opacity: 0.9;
 }
 
+/* API 配置區域 */
 .api-config {
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 15px;
-  margin-top: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
 }
 
 .api-config input {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 5px;
-  background: rgba(255,255,255,0.9);
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.9);
 }
 
+/* 主要內容區域 */
 .main-content {
-  display: flex;
-  min-height: 600px;
+    display: flex;
+    min-height: 600px;
 }
 
+/* 側邊欄 */
 .sidebar {
-  width: 350px;
-  background: #F5F5DC;
-  padding: 30px;
-  border-right: 1px solid #D2B48C;
+    width: 350px;
+    background: #F5F5DC;
+    padding: 30px;
+    border-right: 1px solid #D2B48C;
 }
 
+/* 主內容區域 */
 .content {
-  flex: 1;
-  padding: 30px;
+    flex: 1;
+    padding: 30px;
 }
 
+/* 投資類型選擇按鈕 */
 .investment-type {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .investment-type button {
-  width: 100%;
-  padding: 15px;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 10px;
-  background: #DEB887;
-  color: #654321;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s ease;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #DEB887;
+    color: #654321;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
 .investment-type button:hover {
-  background: #D2B48C;
-  transform: translateY(-2px);
+    background: #D2B48C;
+    transform: translateY(-2px);
 }
 
 .investment-type button.active {
-  background: linear-gradient(135deg, #8B7355 0%, #A0956C 100%);
-  color: white;
-  box-shadow: 0 5px 15px rgba(139, 115, 85, 0.4);
+    background: linear-gradient(135deg, #8B7355 0%, #A0956C 100%);
+    color: white;
+    box-shadow: 0 5px 15px rgba(139, 115, 85, 0.4);
 }
 
+/* 表單樣式 */
 .form-group {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #654321;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #654321;
 }
 
-.form-group input, .form-group select {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #D2B48C;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #D2B48C;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
 }
 
-.form-group input:focus, .form-group select:focus {
-  outline: none;
-  border-color: #8B7355;
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: #8B7355;
 }
 
+/* 提交按鈕 */
 .submit-btn {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #8B7355 0%, #A0956C 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #8B7355 0%, #A0956C 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(139, 115, 85, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(139, 115, 85, 0.3);
 }
 
 .submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
+/* 結果顯示區域 */
 .results {
-  background: #F5F5DC;
-  border-radius: 15px;
-  padding: 30px;
-  margin-top: 20px;
+    background: #F5F5DC;
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 20px;
 }
 
 .results h3 {
-  color: #654321;
-  margin-bottom: 20px;
-  font-size: 1.5em;
+    color: #654321;
+    margin-bottom: 20px;
+    font-size: 1.5em;
 }
 
 .result-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background: white;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .result-item .label {
-  font-weight: bold;
-  color: #654321;
+    font-weight: bold;
+    color: #654321;
 }
 
 .result-item .value {
-  color: #8B7355;
-  font-weight: bold;
-  font-size: 1.1em;
+    color: #8B7355;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
+/* 圖表容器 */
 .chart-container {
-  margin-top: 30px;
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 30px;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* 載入中樣式 */
 .loading {
-  text-align: center;
-  padding: 40px;
-  color: #6c757d;
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
 }
 
 .loading::after {
-  content: '';
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #8B7355;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-left: 10px;
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #8B7355;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
+/* 錯誤和成功消息 */
 .error {
-  background: #f8d7da;
-  color: #721c24;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
 .success {
-  background: #d4edda;
-  color: #155724;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
+/* 隱藏元素 */
 .hidden {
-  display: none;
+    display: none;
 }
 
+/* 表單區段 */
 .form-section {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .form-section h4 {
-  color: #654321;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #D2B48C;
+    color: #654321;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #D2B48C;
 }
 
+/* 網格佈局 */
 .grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
+/* 歷史記錄區域 */
 .history-section {
-  background: #F5F5DC;
-  border-radius: 15px;
-  padding: 20px;
-  margin-top: 30px;
+    background: #F5F5DC;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 30px;
 }
 
 .history-item {
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  border-left: 4px solid #8B7355;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid #8B7355;
 }
 
 .history-item-header {
-  font-weight: bold;
-  color: #654321;
-  margin-bottom: 5px;
+    font-weight: bold;
+    color: #654321;
+    margin-bottom: 5px;
 }
 
 .history-item-details {
-  font-size: 0.9em;
-  color: #666;
+    font-size: 0.9em;
+    color: #666;
 }
 
+/* 響應式設計 */
 @media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-  }
+    body {
+        padding: 10px;
+    }
 
-  .sidebar {
-    width: 100%;
-  }
+    .container {
+        border-radius: 10px;
+    }
 
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
+    .header {
+        padding: 20px;
+    }
+
+    .header h1 {
+        font-size: 2em;
+    }
+
+    .main-content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .api-config {
+        padding: 10px;
+    }
+
+    .results {
+        padding: 20px;
+    }
+
+    .result-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .chart-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.5em;
+    }
+
+    .header p {
+        font-size: 1em;
+    }
+
+    .investment-type button {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .submit-btn {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .sidebar {
+        padding: 15px;
+    }
+
+    .content {
+        padding: 15px;
+    }
 }
