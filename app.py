@@ -1,3 +1,4 @@
+# app.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -39,7 +40,7 @@ app.add_middleware(
         "https://brainfin-flask-api-project-production.up.railway.app",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "http://localhost:8001",  # 新增端口
+        "http://localhost:8001",
         "*"
     ],
     allow_credentials=True,
@@ -65,7 +66,8 @@ async def root():
             "ETF定投": "/api/v1/etf-regular",
             "股票": "/api/v1/stock",
             "債券定存": "/api/v1/bond-deposit",
-            "歷史記錄": "/api/v1/history"
+            "歷史記錄": "/api/v1/history",
+            "健康檢查": "/api/v1/health"  # 新增
         }
     }
 
@@ -73,13 +75,18 @@ async def root():
 async def health_check():
     return {"status": "healthy", "database": "connected"}
 
+# 🔥 新增：在 /api/v1 路徑下也提供健康檢查
+@app.get("/api/v1/health")
+async def health_check_v1():
+    return {"status": "healthy", "database": "connected", "api_version": "v1"}
+
 # 啟動應用程式
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
         "app:app", 
         host="0.0.0.0", 
-        port=8001,  # 改用端口 8001
-        reload=True,  # 開發模式
+        port=8001,
+        reload=True,
         log_level="info"
     )
