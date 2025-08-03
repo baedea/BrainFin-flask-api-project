@@ -5,7 +5,7 @@
 
 class InvestmentApp {
     constructor() {
-        this.apiBaseUrl = 'http://localhost:8001/api/v1'; // FastAPI backend URL
+        this.apiBaseUrl = 'https://brainfin-flask-api-project-production.up.railway.app/api/v1'; // FastAPI backend URL
         this.currentPage = 'home';
         this.calculationHistory = this.loadHistory();
         this.currentSimulationId = null;
