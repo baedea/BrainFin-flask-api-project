@@ -1,0 +1,343 @@
+<!-- Goal Simulator Page Content -->
+<div class="simulator-container">
+    <!-- Investment Type Selector -->
+    <div class="investment-selector">
+        <h2>選擇投資類型</h2>
+        <div class="investment-tabs">
+            <button class="tab-btn active" data-type="real_estate">
+                <i class="fas fa-home"></i>
+                <span>房地產投資</span>
+            </button>
+            <button class="tab-btn" data-type="etf_regular">
+                <i class="fas fa-chart-pie"></i>
+                <span>ETF定期定額</span>
+            </button>
+            <button class="tab-btn" data-type="stock">
+                <i class="fas fa-chart-line"></i>
+                <span>股票投資</span>
+            </button>
+            <button class="tab-btn" data-type="bond_deposit">
+                <i class="fas fa-piggy-bank"></i>
+                <span>債券定存</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Investment Forms -->
+    <div class="investment-forms">
+        <!-- Real Estate Form -->
+        <div id="realEstateForm" class="investment-form active">
+            <div class="form-header">
+                <h3><i class="fas fa-home"></i> 房地產投資計算</h3>
+                <p>輸入房屋價格、貸款條件等參數，分析投資報酬率</p>
+            </div>
+            
+            <form class="calculator-form" data-type="real_estate">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>房屋價格 (萬元)</label>
+                        <input type="number" name="house_price" value="1500" min="0" step="10" required>
+                        <small>預計購買的房屋總價</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>頭期款 (萬元)</label>
+                        <input type="number" name="down_payment" value="300" min="0" step="10" required>
+                        <small>初期支付的頭期款金額</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>貸款利率 (%)</label>
+                        <input type="number" name="loan_rate" value="2.1" min="0" max="10" step="0.1" required>
+                        <small>銀行房貸年利率</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>貸款年限</label>
+                        <select name="loan_years" required>
+                            <option value="20">20年</option>
+                            <option value="25">25年</option>
+                            <option value="30" selected>30年</option>
+                            <option value="35">35年</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>情境A房價漲幅 (%)</label>
+                        <input type="number" name="appreciation_rate_a" value="30" min="-50" max="200" step="5" required>
+                        <small>樂觀情境下的總漲幅</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>情境B房價漲幅 (%)</label>
+                        <input type="number" name="appreciation_rate_b" value="50" min="-50" max="200" step="5" required>
+                        <small>保守情境下的總漲幅</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>年度持有成本 (萬元)</label>
+                        <input type="number" name="annual_cost" value="5" min="0" step="1" required>
+                        <small>稅費、管理費等年度支出</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>模擬年數</label>
+                        <input type="number" name="simulation_years" value="10" min="1" max="30" step="1" required>
+                        <small>投資持有年限</small>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>分析情境</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="scenario" value="A" checked>
+                                <span>情境A：持有指定年數後賣出</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="scenario" value="B">
+                                <span>情境B：持有到貸款還清</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        開始計算
+                    </button>
+                    <button type="button" class="btn btn-outline" id="resetRealEstate">
+                        <i class="fas fa-redo"></i>
+                        重置
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ETF Regular Form -->
+        <div id="etfRegularForm" class="investment-form">
+            <div class="form-header">
+                <h3><i class="fas fa-chart-pie"></i> ETF定期定額投資</h3>
+                <p>模擬ETF定期定額投資策略的長期表現</p>
+            </div>
+            
+            <form class="calculator-form" data-type="etf_regular">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>初始投入金額 (萬元)</label>
+                        <input type="number" name="initial_amount" value="10" min="0" step="1" required>
+                        <small>第一次投入的金額</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>每月定期投入 (萬元)</label>
+                        <input type="number" name="monthly_amount" value="1" min="0" step="0.1" required>
+                        <small>每月固定投入金額</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>年配息率 (%)</label>
+                        <input type="number" name="dividend_yield" value="4" min="0" max="15" step="0.1" required>
+                        <small>ETF的年配息殖利率</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>年價格成長率 (%)</label>
+                        <input type="number" name="price_growth" value="6" min="-20" max="30" step="0.5" required>
+                        <small>ETF的年價格成長率</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>投資年限</label>
+                        <select name="years" required>
+                            <option value="5">5年</option>
+                            <option value="10" selected>10年</option>
+                            <option value="15">15年</option>
+                            <option value="20">20年</option>
+                            <option value="25">25年</option>
+                            <option value="30">30年</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        開始計算
+                    </button>
+                    <button type="button" class="btn btn-outline" id="resetETF">
+                        <i class="fas fa-redo"></i>
+                        重置
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Stock Investment Form -->
+        <div id="stockForm" class="investment-form">
+            <div class="form-header">
+                <h3><i class="fas fa-chart-line"></i> 股票投資模擬</h3>
+                <p>使用蒙地卡羅模擬分析股票投資的風險與報酬</p>
+            </div>
+            
+            <form class="calculator-form" data-type="stock">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>初始投入金額 (萬元)</label>
+                        <input type="number" name="initial_amount" value="50" min="0" step="5" required>
+                        <small>初次投入的資金</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>每年額外投入 (萬元)</label>
+                        <input type="number" name="monthly_amount" value="12" min="0" step="1" required>
+                        <small>每年追加投入的金額</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>預期年報酬率 (%)</label>
+                        <input type="number" name="expected_return" value="8" min="-30" max="50" step="0.5" required>
+                        <small>預期的平均年報酬率</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>波動率 (%)</label>
+                        <input type="number" name="volatility" value="20" min="5" max="80" step="1" required>
+                        <small>報酬率的標準差</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>投資年限</label>
+                        <select name="years" required>
+                            <option value="5">5年</option>
+                            <option value="10" selected>10年</option>
+                            <option value="15">15年</option>
+                            <option value="20">20年</option>
+                            <option value="25">25年</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>模擬次數</label>
+                        <select name="simulations">
+                            <option value="1000">1,000次</option>
+                            <option value="5000">5,000次</option>
+                            <option value="10000" selected>10,000次</option>
+                        </select>
+                        <small>越多次模擬結果越準確</small>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        開始模擬
+                    </button>
+                    <button type="button" class="btn btn-outline" id="resetStock">
+                        <i class="fas fa-redo"></i>
+                        重置
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bond Deposit Form -->
+        <div id="bondDepositForm" class="investment-form">
+            <div class="form-header">
+                <h3><i class="fas fa-piggy-bank"></i> 債券定存計算</h3>
+                <p>計算債券或定存投資的名目與實質報酬</p>
+            </div>
+            
+            <form class="calculator-form" data-type="bond_deposit">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>本金 (萬元)</label>
+                        <input type="number" name="principal" value="100" min="1" step="1" required>
+                        <small>投入的初始資金</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>年利率 (%)</label>
+                        <input type="number" name="interest_rate" value="2.5" min="0.1" max="20" step="0.1" required>
+                        <small>債券或定存的年利率</small>
+                    </div>  
+                    
+                    <div class="form-group">
+                        <label>投資年限</label>
+                        <select name="years" required>
+                            <option value="1">1年</option>
+                            <option value="2">2年</option>
+                            <option value="3">3年</option>
+                            <option value="5" selected>5年</option>
+                            <option value="10">10年</option>
+                            <option value="15">15年</option>
+                            <option value="20">20年</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>通膨率 (%)</label>
+                        <input type="number" name="inflation_rate" value="2.0" min="0" max="10" step="0.1" required>
+                        <small>預期的年通貨膨脹率</small>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>計息方式</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="is_compound" value="true" checked>
+                                <span>複利計息</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="is_compound" value="false">
+                                <span>單利計息</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        開始計算
+                    </button>
+                    <button type="button" class="btn btn-outline" id="resetBond">
+                        <i class="fas fa-redo"></i>
+                        重置
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="results-section" style="display: none;">
+        <div class="results-header">
+            <h2>計算結果</h2>
+            <div class="results-actions">
+                <button id="saveResult" class="btn btn-outline">
+                    <i class="fas fa-save"></i>
+                    儲存結果
+                </button>
+                <button id="exportPDF" class="btn btn-outline">
+                    <i class="fas fa-file-pdf"></i>
+                    匯出PDF
+                </button>
+                <button id="shareResult" class="btn btn-outline">
+                    <i class="fas fa-share"></i>
+                    分享
+                </button>
+            </div>
+        </div>
+        
+        <div id="resultsContent" class="results-content">
+            <!-- Results will be dynamically inserted here -->
+        </div>
+        
+        <div class="results-charts">
+            <div class="chart-container">
+                <canvas id="resultsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
